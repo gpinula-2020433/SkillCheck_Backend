@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose"
 
 const questionnaireResultSchema = Schema(
+  
   {
     user: {
       type: Schema.Types.ObjectId,
