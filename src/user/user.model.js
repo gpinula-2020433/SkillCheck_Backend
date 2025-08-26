@@ -12,16 +12,10 @@ const userSchema = Schema(
             required: [true, 'Surname is required'],
             maxLength: [50, `Can't be more than 50 characters`]
         },
-        username:{
-            type: String,
-            required:[true, 'Surname is required'],
-            unique : [true, 'Username is alredy taken'],
-            lowercase: true,
-            maxLength: [15, `Can't be overcome 15 characters`]
-        },
         email: {
             type: String,
             required: [true, 'Email is required'],
+            lowercase: true,
             unique: true
         },
         password:{

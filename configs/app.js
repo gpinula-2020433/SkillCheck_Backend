@@ -4,6 +4,7 @@ import morgan from "morgan"
 import helmet from "helmet"
 import cors from "cors"
 import {limiter} from '../middlewares/rate.limit.js'
+import cookieParser from "cookie-parser"
 //import authRoutes from '../routes/auth.routes.js'
 
 const configs = (app) =>{
@@ -11,6 +12,7 @@ const configs = (app) =>{
     app.use(express.urlencoded({extended: false}))
     app.use(morgan('dev'))
     app.use(helmet())
+    app.use(cookieParser())
     app.use(limiter)
     /* app.use(cors(
         {
