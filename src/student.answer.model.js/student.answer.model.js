@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose"
 
 const studentAnswerSchema = Schema(
     {
-        answerId: {
-            type: String,
-            required: [true, 'Answer ID is required'],
-            unique: true
-        },
         studentEnrollmentId: {
             type: Schema.Types.ObjectId,
             ref: 'Enrollment',

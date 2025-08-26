@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose"
 
 const questionnaireSchema = Schema(
     {
-        questionnaireId: {
-            type: String,
-            required: [true, 'Questionnaire ID is required'],
-            unique: true
-        },
         title: {
             type: String,
             required: [true, 'Title is required'],
@@ -37,10 +32,6 @@ const questionnaireSchema = Schema(
         weightOverMaxGrade: {
             type: Number,
             required: [true, 'Weight over maximum grade is required']
-        },
-        creationDate: {
-            type: Date,
-            default: Date.now
         },
         deadline: {
             type: Date,

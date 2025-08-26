@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose"
 
 const questionSchema = Schema(
     {
-        questionId: {
-            type: String,
-            required: [true, 'Question ID is required'],
-            unique: true
-        },
         questionnaireId: {
             type: Schema.Types.ObjectId,
             ref: 'Questionnaire',
@@ -26,21 +21,19 @@ const questionSchema = Schema(
             type: Number,
             required: [true, 'Points are required']
         },
-        options: [{
-            optionId: {
-                type: String,
-                required: [true, 'Option ID is required']
-            },
-            text: {
-                type: String,
-                required: [true, 'Option text is required'],
-                maxLength: [300, `Can't be more than 300 characters`]
-            },
-            isCorrect: {
-                type: Boolean,
-                required: [true, 'Is Correct flag is required']
+        options: [
+            {
+                text: {
+                    type: String,
+                    required: [true, 'Option text is required'],
+                    maxLength: [300, `Can't be more than 300 characters`]
+                },
+                isCorrect: {
+                    type: Boolean,
+                    required: [true, 'Is Correct flag is required']
+                }
             }
-        }]
+        ]
     },
     {
         versionKey: false,
