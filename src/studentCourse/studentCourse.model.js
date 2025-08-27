@@ -28,4 +28,4 @@ studentCourseSchema.methods.toJSON = function(){
     return course
 }
 
-export default model('Course', studentCourseSchema)
+export default model('StudentCourse', studentCourseSchema)
