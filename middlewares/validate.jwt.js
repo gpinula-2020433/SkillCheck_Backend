@@ -28,7 +28,7 @@ export const validateJwt = async(req, res, next) => {
     console.error(err)
     return res.status(401).send(
       {
-        message: 'Credenciales inválidas'
+        message: 'Invalid credentials'
       }
     )
   }
@@ -39,31 +39,54 @@ export const isAdmin = async(req, res, next) => {
     const { user } = req
     if (!user || user.role !== 'ADMIN') return res.status(403).send({
         success: false,
-        message: 'No tienes acceso, no eres ADMIN'
+        message: 'Access denied, you are not an ADMIN'
     })
     next()
   } catch (err) {
-    console.error(err)
+    console.error('Admin role error', err)
     return res.status(403).send({
         success: false,
-        message: 'Error con la autorización'
+        message: 'Authorization error'
     })
   }
 }
 
-export const isClient = async(req, res, next) => {
-    try {
-        let { role, name } = req.user
-        console.log(role, name)
-        if (!role || role !== 'CLIENT') return res.status(403).send({
-            success: false,
-            message: `No tienes acceso | Adaptado solo para clientes: ${name}`
-        })
-        next()
-    } catch (err) {
-        console.error(err)
-        return res.status(401).send({ message: 'Rol no autorizado' })
-    }
+export const isTeacher = async(req, res, next) => {
+  try {
+    const {user} = req
+    if(!user || user.role !== 'TEACHER') return res.status(403).send(
+      {
+        message: 'Access denied | Adapted for teachers only'
+      }
+    )
+    next()
+  } catch (err) {
+    console.error('Teacher role error', err)
+    return res.status(403).send(
+      {
+        message: 'Authorization error'
+      }
+    )
+  }
+}
+
+export const isStudent = async(req,res,next)=>{
+  try {
+    const {user} = req
+    if(!user || user.role !== 'STUDENT') return res.status(403).send(
+      {
+        message: 'Access denied | Adapted for students only'
+      }
+    )
+    next()
+  } catch (err) {
+    console.error('Student role error', err)
+    return res.status(403).send(
+      {
+        message: 'Authorization error'
+      }
+    )
+  }
 }
 
 export const hasRole = (...allowedRoles) => {
@@ -73,7 +96,7 @@ export const hasRole = (...allowedRoles) => {
       if (!user || !allowedRoles.includes(user.role)) {
         return res.status(403).send({
           success: false,
-          message: `No tienes acceso - Rol requerido: ${allowedRoles.join(' o ')}`
+          message: `Access denied - Required role: ${allowedRoles.join(' or ')}`
         })
       }
       next()
@@ -81,7 +104,7 @@ export const hasRole = (...allowedRoles) => {
       console.error(err)
       return res.status(403).send({
         success: false,
-        message: 'Error con la autorización'
+        message: 'Authorization error'
       })
     }
   }

@@ -1,14 +1,6 @@
 import { isValidObjectId } from 'mongoose'
 import User from '../src/user/user.model.js'
 
-export const existUsername = async (username, user) => {
-  const alreadyUsername = await User.findOne({ username })
-  if (alreadyUsername && alreadyUsername._id != user.uid) {
-    console.error(`El nombre de usuario ${username} ya existe`)
-    throw new Error(`El nombre de usuario ${username} ya existe`)
-  }
-}
-
 export const existEmail = async (email, user) => {
   const alreadyEmail = await User.findOne({ email })
   if (alreadyEmail && alreadyEmail._id != user.uid) {
