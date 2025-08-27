@@ -5,7 +5,8 @@ import helmet from "helmet"
 import cors from "cors"
 import {limiter} from '../middlewares/rate.limit.js'
 import cookieParser from "cookie-parser"
-//import authRoutes from '../routes/auth.routes.js'
+import authRoutes from '../src/auth/auth.routes.js'
+import { defaultAdmin } from "../src/user/user.controller.js"
 
 const configs = (app) =>{
     app.use(express.json())
@@ -23,7 +24,7 @@ const configs = (app) =>{
 }
 
 const routes = (app)=>{
-    //app.use(authRoutes)
+    app.use(authRoutes)
 }
 
 export const initServer = ()=>{
@@ -33,6 +34,7 @@ export const initServer = ()=>{
         routes(app)
         app.listen(process.env.PORT || 3200)
         console.log(`Server running on port: ${process.env.PORT || 3200}`)
+        defaultAdmin()
     } catch (err) {
         console.error('The server failed to start', err)
     }

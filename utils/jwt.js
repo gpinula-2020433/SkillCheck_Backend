@@ -5,7 +5,7 @@ export const generateJwt = async(payload)=>{
     try {
         return jwt.sign(
             payload,
-            process.env.SECRET_KEY,
+            process.env.SECRET_KEY_JWT,
             {
                 expiresIn: '10h',
                 algorithm: 'HS256'

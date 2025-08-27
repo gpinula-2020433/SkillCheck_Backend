@@ -3,43 +3,52 @@ import jwt from 'jsonwebtoken'
 import { findUser } from '../utils/db.validators.js'
 
 export const validateJwt = async(req, res, next) => {
-    try {
-        let secretKey = process.env.SECRET_KEY
-        let { authorization } = req.headers
-        
-        if (!authorization) return res.status(401).send({ message: 'No estás autorizado' })
-        
-        let user = jwt.verify(authorization, secretKey)
-        const validateUser = await findUser(user.uid)
-        
-        if (!validateUser) return res.status(404).send({
-            success: false,
-            message: 'Usuario no encontrado - No autorizado'
-        })
-        
-        req.user = user
-        next()
-    } catch (err) {
-        console.error(err)
-        return res.status(401).send({ message: 'Credenciales inválidas' })
-    }
+  try {
+    const token = req.cookies.token
+    if (!token) return res.status(401).send(
+      {
+        success: false,
+        message: 'Unauthorized, no token provided'
+      }
+    )
+    
+    const user = jwt.verify(token, process.env.SECRET_KEY_JWT)
+    const validateUser = await findUser(user.uid)
+    
+    if (!validateUser) return res.status(404).send(
+      {
+        success: false,
+        message: 'User not found, unauthorized'
+      }
+    )
+
+    req.user = user
+    next()
+  } catch (err) {
+    console.error(err)
+    return res.status(401).send(
+      {
+        message: 'Credenciales inválidas'
+      }
+    )
+  }
 }
 
 export const isAdmin = async(req, res, next) => {
-    try {
-        const { user } = req
-        if (!user || user.role !== 'ADMIN') return res.status(403).send({
-            success: false,
-            message: 'No tienes acceso, no eres ADMIN'
-        })
-        next()
-    } catch (err) {
-        console.error(err)
-        return res.status(403).send({
-            success: false,
-            message: 'Error con la autorización'
-        })
-    }
+  try {
+    const { user } = req
+    if (!user || user.role !== 'ADMIN') return res.status(403).send({
+        success: false,
+        message: 'No tienes acceso, no eres ADMIN'
+    })
+    next()
+  } catch (err) {
+    console.error(err)
+    return res.status(403).send({
+        success: false,
+        message: 'Error con la autorización'
+    })
+  }
 }
 
 export const isClient = async(req, res, next) => {

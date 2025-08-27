@@ -2,14 +2,11 @@ import { checkPassword, encrypt } from '../../utils/encrypt.js'
 import { generateJwt } from '../../utils/jwt.js'
 import User from '../user/user.model.js'
 
-
-
 export const register = async(req, res)=>{
     try {
         let data = req.body
         let user = new User(data)
         user.password = await encrypt(data.password)
-        user.role = 'STUDENT'
         await user.save()
 
         return res.status(201).send(
@@ -74,4 +71,34 @@ export const login = async(req,res)=>{
             }
         )
     }
+}
+
+export const logout = (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? '' : undefined,
+        })
+
+        return res.status(200).send(
+            {
+                message: 'Logout successful'
+            }
+        )
+    } catch (err) {
+        console.error('Logout error', err)
+        return res.status(500).send(
+            {
+                message: 'Logout error',
+                error: err.message || err
+            }
+        )
+    }
+}
+
+export const test = (req, res)=>{
+    console.log('Test is running')
+    res.send({message: 'Test is running'})
 }
