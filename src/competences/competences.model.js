@@ -3,10 +3,10 @@ import { Schema, model } from "mongoose"
 const competenceSchema = Schema(
   {
     number: {
-      type: number,
+      type: Number,
       required: [true, "Competence number is required"],
     },
-    name: {
+    competenceName: {
       type: String,
       required: [true, "Competence name is required"],
       maxLength: [100, "Can't be more than 100 characters"],

@@ -9,6 +9,8 @@ import authRoutes from '../src/auth/auth.routes.js'
 import { defaultAdmin } from "../src/user/user.controller.js"
 import courseRoutes from '../src/course/course.routes.js'
 import studentCourseRoutes from '../src/studentCourse/studentCourse.routes.js'
+import questionnaireResultRoutes from "../src/questionnaireResult/questionnaireResult.routes.js"
+import competencesRoutes from '../src/competences/competences.routes.js'
 
 const configs = (app) =>{
     app.use(express.json())
@@ -29,6 +31,8 @@ const routes = (app)=>{
     app.use(authRoutes)
     app.use('/v1/course', courseRoutes)
     app.use('/v1/studentCourse', studentCourseRoutes)
+    app.use('/v1/questionnaireResult', questionnaireResultRoutes)
+    app.use('/v1/competences', competencesRoutes)
 }
 
 export const initServer = ()=>{
