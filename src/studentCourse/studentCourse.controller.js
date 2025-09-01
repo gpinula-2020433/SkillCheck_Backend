@@ -67,3 +67,57 @@ export const getStudentCourseById = async (req, res) => {
         })
     }
 }
+
+
+// Agregar un curso a estudiante
+export const addStudentCourse = async (req, res) => {
+    try {
+        const data = req.body
+
+        const studentCourse = new StudentCourse(data)
+        await studentCourse.save()
+
+        return res.send({
+            success: true,
+            message: 'StudentCourse agregado correctamente',
+            studentCourse
+        })
+    } catch (err) {
+        console.error('Error al agregar StudentCourse', err)
+        return res.status(500).send({
+            success: false,
+            message: 'Error al agregar StudentCourse',
+            err
+        })
+    }
+}
+
+
+// Eliminar un curso de estudiante
+export const deleteStudentCourseById = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const deletedStudentCourse = await StudentCourse.findByIdAndDelete(id)
+
+        if (!deletedStudentCourse) {
+            return res.status(404).send({
+                success: false,
+                message: 'StudentCourse no encontrado para eliminar'
+            })
+        }
+
+        return res.send({
+            success: true,
+            message: 'StudentCourse eliminado correctamente',
+            deletedStudentCourse
+        })
+    } catch (err) {
+        console.error('Error al eliminar StudentCourse', err)
+        return res.status(500).send({
+            success: false,
+            message: 'Error al eliminar StudentCourse',
+            err
+        })
+    }
+}

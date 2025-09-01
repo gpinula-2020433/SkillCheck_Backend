@@ -92,7 +92,7 @@ export const addCourse = async (req, res) => {
     }
 
     if (req.file) {
-      courseData.imageCourse = [req.file.filename]
+      courseData.imageCourse = req.file.filename
     }
 
     const course = await Course.create(courseData)
@@ -118,7 +118,7 @@ export const updateCourseById = async (req, res) => {
         const { id } = req.params
         const data = req.body       
 
-        if (data.image) delete data.image  
+        if (data.imageCourse) delete data.imageCourse  
 
         const update = await Course.findByIdAndUpdate(id, data, { new: true })
             .populate('user', 'name surname username email')

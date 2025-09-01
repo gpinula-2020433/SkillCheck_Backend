@@ -16,9 +16,10 @@ const courseSchema = Schema(
       ref: "User",
       required: [true, "Teacher is required"],
     },
-    imageCourse: [{
+    imageCourse:{
       type: String, 
-    }],
+      default: null
+    },
     questionnaires: [
       {
         type: Schema.Types.ObjectId,

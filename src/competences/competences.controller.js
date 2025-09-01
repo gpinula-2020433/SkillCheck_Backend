@@ -63,3 +63,57 @@ export const getCompetenceById = async (req, res) => {
         })
     }
 }
+
+
+// Agregar una competencia
+export const addCompetence = async (req, res) => {
+    try {
+        const data = req.body
+
+        const competence = new Competence(data)
+        await competence.save()
+
+        return res.send({
+            success: true,
+            message: 'Competencia agregada correctamente',
+            competence
+        })
+    } catch (err) {
+        console.error('Error al agregar competencia', err)
+        return res.status(500).send({
+            success: false,
+            message: 'Error al agregar competencia',
+            err
+        })
+    }
+}
+
+
+// Eliminar una competencia por Id
+export const deleteCompetenceById = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const deletedCompetence = await Competence.findByIdAndDelete(id)
+
+        if (!deletedCompetence) {
+            return res.status(404).send({
+                success: false,
+                message: 'Competencia no encontrada para eliminar'
+            })
+        }
+
+        return res.send({
+            success: true,
+            message: 'Competencia eliminada correctamente',
+            deletedCompetence
+        })
+    } catch (err) {
+        console.error('Error al eliminar competencia', err)
+        return res.status(500).send({
+            success: false,
+            message: 'Error al eliminar competencia',
+            err
+        })
+    }
+}
