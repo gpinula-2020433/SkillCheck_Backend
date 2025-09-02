@@ -17,23 +17,32 @@ const questionSchema = Schema(
             ref: 'Competency',
             required: [true, 'Competency is required']
         },
-        points: {
-            type: Number,
-            required: [true, 'Points are required']
+        type: {
+            type: String,
+            enum: ['CHOICE', 'OPEN'],
+            required: [true, 'Question type is required']
         },
         options: [
             {
                 text: {
                     type: String,
-                    required: [true, 'Option text is required'],
                     maxLength: [300, `Can't be more than 300 characters`]
                 },
                 isCorrect: {
                     type: Boolean,
-                    required: [true, 'Is Correct flag is required']
+                    default: false
                 }
             }
-        ]
+        ],
+        correctAnswer: {
+            type: String,
+            maxLength: [300, `Can't be more than 300 characters`]
+        },
+        points: {
+            type: Number,
+            required: [true, 'Points are required'],
+            min: [0, 'Points must be at least 0']
+        },
     },
     {
         versionKey: false,

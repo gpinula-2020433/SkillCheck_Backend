@@ -10,7 +10,8 @@
       },
       competeceName: {
         type: Schema.Types.ObjectId,
-        ref: 'Competence'
+        ref: 'Competence',
+        required: [true, 'Competence is required']
       },
       totalQuestions: {
         type: Number,
