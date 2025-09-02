@@ -28,11 +28,11 @@ const studentAnswerSchema = Schema(
         },
         answerText: {
             type: String,
-            default: null
+            default: ''
         },
         isCorrect: {
             type: Boolean,
-            default: null
+            default: false
         },
         pointsObtained: {
             type: Number,

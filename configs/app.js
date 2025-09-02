@@ -5,8 +5,11 @@ import helmet from "helmet"
 import cors from "cors"
 import {limiter} from '../middlewares/rate.limit.js'
 import cookieParser from "cookie-parser"
-import authRoutes from '../src/auth/auth.routes.js'
 import { defaultAdmin } from "../src/user/user.controller.js"
+import authRoutes from '../src/auth/auth.routes.js'
+import questionnaireRoutes from "../src/questionnaire/questionnaire.routes.js"
+import questionRoutes from "../src/question/question.routes.js"
+import questionnaireResultRoutes from "../src/questionnaire.result/questionnaire.result.routes.js"
 
 const configs = (app) =>{
     app.use(express.json())
@@ -15,16 +18,19 @@ const configs = (app) =>{
     app.use(helmet())
     app.use(cookieParser())
     app.use(limiter)
-    /* app.use(cors(
+    app.use(cors(
         {
-            origin: 'http://localhost:5173',
+            origin: process.env.CLIENT_URL,
             credentials: true
         }
-    )) */
+    ))
 }
 
 const routes = (app)=>{
     app.use(authRoutes)
+    app.use('/questionnaire', questionnaireRoutes)
+    app.use('/question', questionRoutes)
+    app.use('/result', questionnaireResultRoutes)
 }
 
 export const initServer = ()=>{
