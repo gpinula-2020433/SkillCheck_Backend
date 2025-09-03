@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser"
 import { defaultAdmin } from "../src/user/user.controller.js"
 import courseRoutes from '../src/course/course.routes.js'
 import studentCourseRoutes from '../src/studentCourse/studentCourse.routes.js'
-import questionnaireResultRoutes from "../src/questionnaireResult/questionnaireResult.routes.js"
+import questionnaireResultRoutesN from "../src/questionnaireResult/questionnaireResult.routes.js"
 import competencesRoutes from '../src/competences/competences.routes.js'
 import authRoutes from '../src/auth/auth.routes.js'
 import questionnaireRoutes from "../src/questionnaire/questionnaire.routes.js"
@@ -38,7 +38,7 @@ const routes = (app)=>{
     app.use('/v1/competences', competencesRoutes)
     app.use('/questionnaire', questionnaireRoutes)
     app.use('/question', questionRoutes)
-    app.use('/result', questionnaireResultRoutes)
+    app.use('/result', questionnaireResultRoutesN)
 }
 
 export const initServer = ()=>{

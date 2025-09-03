@@ -1,6 +1,6 @@
   import { Schema, model } from "mongoose"
 
-  const questionnaireResultSchema = Schema(
+  const questionnaireResultSchemaN = Schema(
     
     {
       user: {
@@ -41,9 +41,9 @@
     }
   )
 
-  questionnaireResultSchema.methods.toJSON = function () {
+  questionnaireResultSchemaN.methods.toJSON = function () {
     const { __v, ...result } = this.toObject()
     return result
   }
 
-  export default model("QuestionnaireResult", questionnaireResultSchema)
+  export default model("QuestionnaireResultN", questionnaireResultSchemaN)

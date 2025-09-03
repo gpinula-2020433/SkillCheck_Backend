@@ -1,13 +1,13 @@
 'use strict'
 
-import QuestionnaireResult from './questionnaireResult.model.js'
+import QuestionnaireResultN from './questionnaireResult.model.js'
 
 // Listar todos los resultados
 export const getAllResults = async (req, res) => {
     try {
         const { limit = 10, skip = 0 } = req.query
 
-        const results = await QuestionnaireResult.find()
+        const results = await QuestionnaireResultN.find()
             .skip(Number(skip))
             .limit(Number(limit))
             .populate('user', 'name surname username email')
@@ -39,7 +39,7 @@ export const getAllResults = async (req, res) => {
 export const getResultById = async (req, res) => {
     try {
         const { id } = req.params
-        const result = await QuestionnaireResult.findById(id)
+        const result = await QuestionnaireResultN.findById(id)
             .populate('user', 'name surname username email')
             .populate('competeceName', 'name description')
 
@@ -79,7 +79,7 @@ export const addResult = async (req, res) => {
 
         const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(2)
 
-        const newResult = new QuestionnaireResult({
+        const newResult = new QuestionnaireResultN({
             user,
             competeceName,
             totalQuestions,
