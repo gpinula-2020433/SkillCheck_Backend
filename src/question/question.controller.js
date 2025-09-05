@@ -1,45 +1,6 @@
 import Question from './question.model.js'
 import Questionnaire from '../questionnaire/questionnaire.model.js'
 
-export const createQuestionnaireWithQuestions = async (req, res) => {
-  try {
-    let { questions, ...questionnaireData } = req.body
-
-    let questionnaire = new Questionnaire(questionnaireData)
-    await questionnaire.save()
-
-    let savedQuestions = []
-    if (questions && questions.length > 0) {
-      for (let q of questions) {
-        let question = new Question(
-          {
-            ...q,
-            questionnaireId: questionnaire._id
-          }
-        )
-        await question.save()
-        savedQuestions.push(question)
-      }
-    }
-
-    return res.status(201).send(
-      {
-        message: 'Questionnaire and questions created successfully',
-        questionnaire: questionnaire,
-        questions: savedQuestions
-      }
-    )
-  } catch (err) {
-    console.error('Error creating questionnaire with questions', err)
-    return res.status(500).send(
-      {
-        message: 'Error creating questionnaire with questions',
-        error: err.message || err
-      }
-    )
-  }
-}
-
 
 export const getQuestionsForStudent = async (req, res) => {
   try {
@@ -59,6 +20,7 @@ export const getQuestionsForStudent = async (req, res) => {
 
         return {
           _id: q._id,
+          questionnaireId: q.questionnaireId,
           statement: q.statement,
           type: q.type,
           options,
@@ -69,6 +31,7 @@ export const getQuestionsForStudent = async (req, res) => {
         
         return {
           _id: q._id,
+          questionnaireId: q.questionnaireId,
           statement: q.statement,
           type: q.type,
           points: q.points,
@@ -80,6 +43,7 @@ export const getQuestionsForStudent = async (req, res) => {
     return res.status(200).send(
       {
         message: 'Questions retrieved successfully',
+        questionnaireId,
         questions: formattedQuestions
       }
     )

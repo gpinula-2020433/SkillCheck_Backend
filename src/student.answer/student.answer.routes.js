@@ -1,16 +1,15 @@
 import { Router } from 'express';
-import {
-
-} from './student.answer.controller.js';
+import { submitAnswers } from './student.answer.controller.js';
 import { validateJwt } from '../../middlewares/validate.jwt.js'
 import {
 
 } from '../../middlewares/validators.js'
+import { checkAnswersAndAttempt } from '../../utils/db.validators.js';
 
 
 const api = Router()
 
 api.get('/', [validateJwt], )
-api.post('/', [validateJwt], )
+api.post('/', [validateJwt, checkAnswersAndAttempt], submitAnswers)
 
 export default api;

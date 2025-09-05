@@ -10,8 +10,8 @@ export const getAllCourses = async (req, res) => {
         const courses = await Course.find()
             .skip(Number(skip))
             .limit(Number(limit))
-            .populate('user', 'name surname username email')
-            .populate('questionnaries', 'tittle description')
+            .populate('teacher', 'name surname email')
+            //.populate('questionnaries', 'tittle description')
             .populate('competences', 'name description')
 
         if (courses.length === 0) {

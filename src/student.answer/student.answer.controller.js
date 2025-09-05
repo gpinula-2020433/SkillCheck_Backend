@@ -1,16 +1,41 @@
 import StudentAnswer from './student.answer.model.js'
 import Question from '../question/question.model.js'
+import { generateResult } from '../questionnaire.result/questionnaire.result.controller.js'
+import StudentCourse from '../studentCourse/studentCourse.model.js'
+import Questionnaire from '../questionnaire/questionnaire.model.js'
 
 export const submitAnswers = async (req, res) => {
   try {
-    let data = req.body.answers 
+    const { uid } = req.user
+    const data = req.body.answers
 
     let studentAnswers = []
+    let studentCourseId = null
+    let questionnaireId = null
 
     for (let answer of data) {
+      if (!questionnaireId) questionnaireId = answer.questionnaireId
+
       let question = await Question.findById(answer.questionId)
       if (!question) {
         return res.status(404).send({ message: 'Question not found' })
+      }
+
+      let questionnaire = await Questionnaire.findById(questionnaireId)
+      if (!questionnaire) {
+        return res.status(404).send({ message: 'Questionnaire not found' })
+      }
+
+      if (!studentCourseId) {
+        const studentCourse = await StudentCourse.findOne({
+          student: uid,
+          course: questionnaire.courseId
+        })
+
+        if (!studentCourse) {
+          return res.status(404).send({ message: 'Student is not enrolled in the course of the selected questionnaire' })
+        }
+        studentCourseId = studentCourse._id
       }
 
       let isCorrect = false
@@ -32,6 +57,7 @@ export const submitAnswers = async (req, res) => {
       let studentAnswer = new StudentAnswer(
         {
           ...answer,
+          studentCourseId,
           isCorrect: isCorrect,
           pointsObtained: pointsObtained
         }
@@ -42,10 +68,13 @@ export const submitAnswers = async (req, res) => {
 
     await StudentAnswer.insertMany(studentAnswers)
 
+    let result = await generateResult(studentCourseId, questionnaireId)
+
     return res.status(201).send(
       {
         message: 'All answers submitted successfully',
-        answers: studentAnswers
+        answers: studentAnswers,
+        result
       }
     )
 

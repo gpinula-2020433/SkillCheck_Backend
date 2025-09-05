@@ -14,7 +14,7 @@ const questionSchema = Schema(
         },
         competencyId: {
             type: Schema.Types.ObjectId,
-            ref: 'Competency',
+            ref: 'Competence',
             required: [true, 'Competency is required']
         },
         type: {

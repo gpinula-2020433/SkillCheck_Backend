@@ -8,12 +8,12 @@ import cookieParser from "cookie-parser"
 import { defaultAdmin } from "../src/user/user.controller.js"
 import courseRoutes from '../src/course/course.routes.js'
 import studentCourseRoutes from '../src/studentCourse/studentCourse.routes.js'
-import questionnaireResultRoutesN from "../src/questionnaireResult/questionnaireResult.routes.js"
 import competencesRoutes from '../src/competences/competences.routes.js'
 import authRoutes from '../src/auth/auth.routes.js'
 import questionnaireRoutes from "../src/questionnaire/questionnaire.routes.js"
 import questionRoutes from "../src/question/question.routes.js"
 import questionnaireResultRoutes from "../src/questionnaire.result/questionnaire.result.routes.js"
+import studentAnswerRoutes from "../src/student.answer/student.answer.routes.js"
 
 const configs = (app) =>{
     app.use(express.json())
@@ -36,9 +36,9 @@ const routes = (app)=>{
     app.use('/v1/studentCourse', studentCourseRoutes)
     app.use('/v1/questionnaireResult', questionnaireResultRoutes)
     app.use('/v1/competences', competencesRoutes)
-    app.use('/questionnaire', questionnaireRoutes)
-    app.use('/question', questionRoutes)
-    app.use('/result', questionnaireResultRoutesN)
+    app.use('/v1/questionnaire', questionnaireRoutes)
+    app.use('/v1/question', questionRoutes)
+    app.use('/v1/studentAnswer', studentAnswerRoutes)
 }
 
 export const initServer = ()=>{

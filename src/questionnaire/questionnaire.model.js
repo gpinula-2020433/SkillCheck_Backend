@@ -31,7 +31,7 @@ const questionnaireSchema = Schema(
         },
         weightOverMaxGrade: {
             type: Number,
-            required: [true, 'Weight over maximum grade is required']
+            required: [true, 'Weight over max grade is required']
         },
         deadline: {
             type: Date,

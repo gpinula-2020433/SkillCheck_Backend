@@ -11,7 +11,7 @@ export const getAllStudentCourses = async (req, res) => {
             .skip(Number(skip))
             .limit(Number(limit))
             .populate('course', 'name description')
-            .populate('questionnaires', 'title description')
+            //.populate('questionnaires', 'title description')
 
         if (studentCourses.length === 0) {
             return res.status(404).send({
