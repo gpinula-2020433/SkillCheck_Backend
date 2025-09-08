@@ -19,19 +19,7 @@ const courseSchema = Schema(
     imageCourse:{
       type: String, 
       default: null
-    },
-    questionnaires: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Questionnaire",
-      },
-    ],
-    competences: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Competence",
-      },
-    ],
+    }
   },
   {
     versionKey: false,
