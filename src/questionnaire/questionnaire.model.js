@@ -33,6 +33,10 @@ const questionnaireSchema = Schema(
             type: Number,
             required: [true, 'Weight over max grade is required']
         },
+        openDate: {
+            type: Date,
+            required: [true, 'Open date is required']
+        },
         deadline: {
             type: Date,
             required: [true, 'Deadline is required']

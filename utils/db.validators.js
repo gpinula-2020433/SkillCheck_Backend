@@ -71,6 +71,8 @@ export const checkAnswersAndAttempt = async (req, res, next) => {
       return res.status(400).send({ message: 'No answers provided' })
     }
 
+   console.log( answers)
+    
     const questionnaireId = answers[0]?.questionnaireId
     if (!questionnaireId) {
       return res.status(400).send({ message: 'No questionnaire ID found in the answers' })

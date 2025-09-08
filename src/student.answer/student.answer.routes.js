@@ -10,6 +10,6 @@ import { checkAnswersAndAttempt } from '../../utils/db.validators.js';
 const api = Router()
 
 api.get('/', [validateJwt], )
-api.post('/', [validateJwt, checkAnswersAndAttempt], submitAnswers)
+api.post('/submitAnswers', [validateJwt, checkAnswersAndAttempt], submitAnswers)
 
 export default api;

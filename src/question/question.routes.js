@@ -10,6 +10,6 @@ import {
 const api = Router()
 
 api.post('/', [validateJwt], )
-api.get('/:id', [validateJwt], getQuestionsForStudent)
+api.get('/getQuestionsForStudent/:id', [validateJwt], getQuestionsForStudent)
 
 export default api
