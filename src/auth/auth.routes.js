@@ -11,12 +11,12 @@ import {
     isStudent,
     validateJwt
 } from '../../middlewares/validate.jwt.js'
-import { userRegistrationValidator } from "../../middlewares/validators.js";
+import { userLoginValidator, userRegistrationValidator } from "../../middlewares/validators.js";
 
 const api = Router()
 
 api.post('/register', [validateJwt, isAdmin, userRegistrationValidator], register)
-api.post('/login', login)
+api.post('/login', userLoginValidator,login)
 api.post('/logout', [validateJwt], logout)
 api.get('/test', validateJwt, test)
 

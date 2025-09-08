@@ -21,7 +21,17 @@ export const userRegistrationValidator = [
         .isStrongPassword()
         .withMessage('La contraseña debe ser más fuerte, debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos.'),
     body('role', 'El rol no puede estar vacío')
-        .notEmpty(),
+        .notEmpty()
+        .customSanitizer(value => value.trim().toUpperCase())
+        .isIn(['ADMIN', 'TEACHER', 'STUDENT'])
+        .withMessage('El rol debe ser ADMIN, TEACHER o STUDENT'),
     validateErrors
 ]
 
+export const userLoginValidator = [
+    body('userLogin', 'El correo electrónico o usuario no puede estar vacío')
+        .notEmpty(),
+    body('password', 'La contraseña no puede estar vacía')
+        .notEmpty(),
+    validateErrors
+]

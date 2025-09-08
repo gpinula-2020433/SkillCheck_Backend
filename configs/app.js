@@ -14,6 +14,7 @@ import questionnaireRoutes from "../src/questionnaire/questionnaire.routes.js"
 import questionRoutes from "../src/question/question.routes.js"
 import questionnaireResultRoutes from "../src/questionnaire.result/questionnaire.result.routes.js"
 import studentAnswerRoutes from "../src/student.answer/student.answer.routes.js"
+import userRoutes from '../src/user/user.routes.js'
 
 const configs = (app) =>{
     app.use(express.json())
@@ -32,6 +33,7 @@ const configs = (app) =>{
 
 const routes = (app)=>{
     app.use(authRoutes)
+    app.use('/v1/user', userRoutes)
     app.use('/v1/course', courseRoutes)
     app.use('/v1/studentCourse', studentCourseRoutes)
     app.use('/v1/questionnaireResult', questionnaireResultRoutes)
