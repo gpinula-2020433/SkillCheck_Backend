@@ -13,8 +13,7 @@ const competenceSchema = Schema(
     },
     courseId: {
       type: Schema.Types.ObjectId,
-      ref: "Course",
-      required: [true, "Course ID is required"],
+      ref: "Course"
     }
   },
   {
