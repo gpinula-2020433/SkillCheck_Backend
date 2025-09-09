@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { addCompetence, deleteCompetenceById, getAllCompetences,
-         getCompetenceById
+         getCompetenceById,
+         getCompetencesByCourse
  } from "./competences.controller.js";
 
  const api = Router()
 
 api.get('/allCompetences', getAllCompetences)
 api.get('/competenceById/:id', getCompetenceById)
+api.get('/competenceByCourse/:id', getCompetencesByCourse)
 api.post('/addCompetence', addCompetence)
 api.delete('/deleteCompetence/:id', deleteCompetenceById)
 

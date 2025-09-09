@@ -1,6 +1,8 @@
 'use strict'
 
 import Competence from './competences.model.js'
+import Course from '../course/course.model.js'
+import mongoose from 'mongoose'
 
 // Listar todas las competencias
 export const getAllCompetences = async (req, res) => {
@@ -63,6 +65,38 @@ export const getCompetenceById = async (req, res) => {
         })
     }
 }
+
+
+// Listar competencias por curso
+export const getCompetencesByCourse = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    // Buscar el curso y popular el arreglo de competencias
+    const course = await Course.findById(id).populate('competences')
+
+    if (!course || !course.competences || course.competences.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: 'No se encontraron competencias para este curso'
+      })
+    }
+
+    return res.send({
+      success: true,
+      message: 'Competencias encontradas',
+      competences: course.competences
+    })
+  } catch (err) {
+    console.error('Error al listar competencias por curso', err)
+    return res.status(500).send({
+      success: false,
+      message: 'Error al listar competencias por curso',
+      err: err.message || err
+    })
+  }
+}
+
 
 
 // Agregar una competencia
