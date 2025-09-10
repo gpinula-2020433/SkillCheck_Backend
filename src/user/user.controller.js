@@ -93,3 +93,30 @@ export const getAuthenticatedUser = async(req, res)=>{
         )
     }
 } 
+
+
+// Obtener todos los profesores
+export const getAllTeachers = async (req, res) => {
+  try {
+    const teachers = await User.find({ role: "TEACHER" }).select("name surname email")
+    if (!teachers || teachers.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No se encontraron profesores"
+      })
+    }
+
+    return res.send({
+      success: true,
+      message: "Profesores encontrados",
+      teachers
+    })
+  } catch (err) {
+    console.error("Error obteniendo profesores", err)
+    return res.status(500).send({
+      success: false,
+      message: "Error general",
+      err
+    })
+  }
+}

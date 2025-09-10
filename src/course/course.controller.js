@@ -1,6 +1,7 @@
 'use strict'
 
 import Course from "./course.model.js"
+import Competence from '../competences/competences.model.js'
 
 // Listar todos los cursos (filtrados por rol)
 export const getAllCourses = async (req, res) => {
@@ -79,7 +80,7 @@ export const getCourseById = async (req, res) => {
 }
 
 
-//Agregar Curso
+// Agregar Curso
 export const addCourse = async (req, res) => {
   try {
     const { name, description, teacher, competences } = req.body
@@ -91,11 +92,30 @@ export const addCourse = async (req, res) => {
       })
     }
 
+    let competencesIds = []
+    if (competences) {
+      const parsedCompetences = Array.isArray(competences)
+        ? competences
+        : JSON.parse(competences)
+
+      for (const comp of parsedCompetences) {
+        let competenceDoc = await Competence.findOne({ competenceName: comp });
+        if (!competenceDoc) {
+            competenceDoc = await Competence.create({
+            competenceName: comp,
+            number: 0,
+            courseId: null
+            })
+        }
+        competencesIds.push(competenceDoc._id)
+        }
+    }
+
     const courseData = {
       name,
       description,
       teacher,
-      competences
+      competences: competencesIds,
     }
 
     if (req.file) {
@@ -110,6 +130,7 @@ export const addCourse = async (req, res) => {
       course,
     })
   } catch (error) {
+    console.error(error)
     return res.status(500).json({
       success: false,
       message: "Error creating course",
