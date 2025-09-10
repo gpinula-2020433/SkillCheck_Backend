@@ -19,7 +19,11 @@ const courseSchema = Schema(
     imageCourse:{
       type: String, 
       default: null
-    }
+    },
+    competences: [{ 
+      type: Schema.Types.ObjectId, 
+      ref: 'Competence' 
+    }]
   },
   {
     versionKey: false,

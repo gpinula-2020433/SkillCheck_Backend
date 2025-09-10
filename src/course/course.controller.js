@@ -2,19 +2,28 @@
 
 import Course from "./course.model.js"
 
-// Listar todos los cursos
+// Listar todos los cursos (filtrados por rol)
 export const getAllCourses = async (req, res) => {
     try {
         const { limit = 10, skip = 0 } = req.query
+        let courses
 
-        const courses = await Course.find()
-            .skip(Number(skip))
-            .limit(Number(limit))
-            .populate('teacher', 'name surname email')
-            //.populate('questionnaries', 'tittle description')
-            .populate('competences', 'name description')
+        if (req.user.role === 'TEACHER') {
+            courses = await Course.find({ teacher: req.user.uid })
+                .skip(Number(skip))
+                .limit(Number(limit))
+                .populate('teacher', 'name surname email')
+                .populate('competences', 'name description')
 
-        if (courses.length === 0) {
+        } else {
+            courses = await Course.find()
+                .skip(Number(skip))
+                .limit(Number(limit))
+                .populate('teacher', 'name surname email')
+                .populate('competences', 'name description')
+        }
+
+        if (!courses || courses.length === 0) {
             return res.status(404).send({
                 success: false,
                 message: 'No se encontraron cursos'
@@ -43,8 +52,7 @@ export const getCourseById = async (req, res) => {
     try {
         const { id } = req.params
         const course = await Course.findById(id)
-            .populate('user', 'name surname username email')
-            .populate('questionnaries', 'tittle description')
+            .populate('teacher', 'name surname email')
             .populate('competences', 'name description')
 
         if (!course) {
@@ -74,12 +82,12 @@ export const getCourseById = async (req, res) => {
 //Agregar Curso
 export const addCourse = async (req, res) => {
   try {
-    const { name, description, teacher, questionnaires, competences } = req.body;
+    const { name, description, teacher, competences } = req.body
 
-    if (!name || !description || !teacher) {
+    if (!name || !teacher) {
       return res.status(400).json({
         success: false,
-        message: "Name, description and teacher are required",
+        message: "Name and teacher are required",
       })
     }
 
@@ -87,8 +95,7 @@ export const addCourse = async (req, res) => {
       name,
       description,
       teacher,
-      questionnaires,
-      competences,
+      competences
     }
 
     if (req.file) {
@@ -121,8 +128,7 @@ export const updateCourseById = async (req, res) => {
         if (data.imageCourse) delete data.imageCourse  
 
         const update = await Course.findByIdAndUpdate(id, data, { new: true })
-            .populate('user', 'name surname username email')
-            .populate('questionnaries', 'tittle description')
+            .populate('teacher', 'name surname email')
             .populate('competences', 'name description')
 
         if (!update) {
