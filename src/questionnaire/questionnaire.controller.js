@@ -379,3 +379,54 @@ export const getQuestionnaireResults = async (req, res) => {
     })
   }
 }
+
+export const getStudentAttemptForQuestionnaire = async (req, res) => {
+  try {
+    const { uid } = req.user
+    const { id: questionnaireId } = req.params
+
+    const questionnaire = await Questionnaire.findById(questionnaireId).select("courseId")
+    if (!questionnaire) {
+      return res.status(404).send({ message: "Cuestionario no encontrado" })
+    }
+
+    const studentCourse = await StudentCourse.findOne({
+      student: uid,
+      course: questionnaire.courseId
+    })
+
+    if (!studentCourse) {
+      return res.status(403).send({
+        message: "El estudiante no está inscrito en el curso de este cuestionario"
+      })
+    }
+
+    const attempt = await QuestionnaireResult.findOne({
+      studentCourseId: studentCourse._id,
+      questionnaireId
+    })
+      .populate("questionnaireId", "title description maxGrade passingGrade maxAllowedGrade weightOverMaxGrade")
+      .populate({
+        path: "studentCourseId",
+        populate: { path: "course", select: "name" }
+      })
+      .lean()
+
+    if (!attempt) {
+      return res.status(404).send({
+        message: "El estudiante no tiene intento en este cuestionario"
+      })
+    }
+
+    return res.status(200).send({
+      message: "Resultado encontrado",
+      attempt
+    })
+  } catch (err) {
+    console.error("Error al verificar intento del cuestionario:", err)
+    return res.status(500).send({
+      message: "Error interno del servidor",
+      error: err.message || err
+    })
+  }
+}
