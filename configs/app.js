@@ -3,6 +3,7 @@ import express from "express"
 import morgan from "morgan"
 import helmet from "helmet"
 import cors from "cors"
+import path from 'path'
 import {limiter} from '../middlewares/rate.limit.js'
 import cookieParser from "cookie-parser"
 import { defaultAdmin } from "../src/user/user.controller.js"
@@ -29,6 +30,13 @@ const configs = (app) =>{
             credentials: true
         }
     ))
+    app.use('/uploads/img/courses', (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL)
+    res.setHeader('Access-Control-Allow-Methods', 'GET')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+    next()
+    }, express.static(path.join(process.cwd(), 'uploads/img/courses')))
 }
 
 const routes = (app)=>{
