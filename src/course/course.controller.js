@@ -2,49 +2,60 @@
 
 import Course from "./course.model.js"
 import Competence from '../competences/competences.model.js'
+import StudentCourse from "../studentCourse/studentCourse.model.js"
 
 // Listar todos los cursos (filtrados por rol)
+
 export const getAllCourses = async (req, res) => {
-    try {
-        const { limit = 10, skip = 0 } = req.query
-        let courses
+  try {
+    const { limit = 10, skip = 0 } = req.query
+    let courses
 
-        if (req.user.role === 'TEACHER') {
-            courses = await Course.find({ teacher: req.user.uid })
-                .skip(Number(skip))
-                .limit(Number(limit))
-                .populate('teacher', 'name surname email')
-                .populate('competences', 'name description')
+    if (req.user.role === "TEACHER") {
+      courses = await Course.find({ teacher: req.user.uid })
+        .skip(Number(skip))
+        .limit(Number(limit))
+        .populate("teacher", "name surname email")
+        .populate("competences", "name description")
 
-        } else {
-            courses = await Course.find()
-                .skip(Number(skip))
-                .limit(Number(limit))
-                .populate('teacher', 'name surname email')
-                .populate('competences', 'name description')
-        }
+    } else if (req.user.role === "STUDENT") {
+      const studentCourses = await StudentCourse.find({ student: req.user.uid }).select("course")
+      const courseIds = studentCourses.map(sc => sc.course)
 
-        if (!courses || courses.length === 0) {
-            return res.status(404).send({
-                success: false,
-                message: 'No se encontraron cursos'
-            })
-        }
+      courses = await Course.find({ _id: { $in: courseIds } })
+        .skip(Number(skip))
+        .limit(Number(limit))
+        .populate("teacher", "name surname email")
+        .populate("competences", "name description")
 
-        return res.send({
-            success: true,
-            message: 'Cursos encontrados',
-            courses
-        })
-
-    } catch (err) {
-        console.error('General error', err)
-        return res.status(500).send({
-            success: false,
-            message: 'Error general',
-            err
-        })
+    } else {
+      courses = await Course.find()
+        .skip(Number(skip))
+        .limit(Number(limit))
+        .populate("teacher", "name surname email")
+        .populate("competences", "name description")
     }
+
+    if (!courses || courses.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No se encontraron cursos",
+      })
+    }
+
+    return res.send({
+      success: true,
+      message: "Cursos encontrados",
+      courses,
+    })
+  } catch (err) {
+    console.error("General error", err)
+    return res.status(500).send({
+      success: false,
+      message: "Error general",
+      err,
+    })
+  }
 }
 
 
