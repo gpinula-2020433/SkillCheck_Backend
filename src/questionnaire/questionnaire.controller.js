@@ -7,42 +7,49 @@ import User from '../user/user.model.js'
 import Course from '../course/course.model.js'
 
 export const getAllQuestionnaires = async (req, res) => {
-  let { limit = 10, skip = 0 } = req.query
+  let { limit = 10, skip = 0, courseId } = req.query
 
   limit = parseInt(limit)
   skip = parseInt(skip)
 
-  try {
-    const questionnaires = await Questionnaire.find()
-      .skip(skip)
-      .limit(limit)
-      //.populate('courseId', 'name')
-      .sort({ createdAt: -1 })
+  const filter = {}
 
-    if (questionnaires.length === 0) {
-      return res.status(204).send(
+  if (courseId) {
+    filter.courseId = courseId
+    if(!await Course.findById(courseId)){
+      return res.status(404).send(
         {
-          message: 'No se encontraron cuestionarios'
+          message: 'El curso no existe'
         }
       )
     }
+  }
 
-    return res.status(200).send(
-      {
-        message: 'Cuestionarios obtenidos con éxito',
-        total: questionnaires.length,
-        data: questionnaires
-      }
-    )
+  try {
+    const questionnaires = await Questionnaire.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .populate('courseId', 'name')
+
+    if (questionnaires.length === 0) {
+      return res.status(404).send({
+        message: 'Este curso no tiene cuestionarios registrados'
+      })
+    }
+
+    return res.status(200).send({
+      message: 'Cuestionarios obtenidos con éxito',
+      total: questionnaires.length,
+      data: questionnaires
+    })
   } catch (err) {
     console.error('Error al obtener cuestionarios:', err)
-    return res.status(500).send(
-      {
-        success: false,
-        message: 'Error interno del servidor',
-        error: err.message || err
-      }
-    )
+    return res.status(500).send({
+      success: false,
+      message: 'Error interno del servidor',
+      error: err.message || err
+    })
   }
 }
 

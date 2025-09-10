@@ -46,7 +46,9 @@ const questionnaireResultSchema = Schema(
     competencies: [
       {
         competencyId: { type: Schema.Types.ObjectId, ref: "Competence", required: true },
+        competencyNumber: {type: Number, required: true}, 
         competencyName: { type: String, required: true },
+        totalQuestionsInCompetency: { type: Number, required: true },
         correctAnswers: { type: Number, required: true },
         wrongAnswers: { type: Number, required: true },
         percentage: { type: Number, required: true }

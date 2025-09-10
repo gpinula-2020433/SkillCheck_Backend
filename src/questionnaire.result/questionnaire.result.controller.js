@@ -72,7 +72,9 @@ export const generateResult = async (studentCourseId, questionnaireId) => {
 
       competencies.push({
         competencyId: competency._id,
+        competencyNumber: competency.number,
         competencyName: competency.competenceName,
+        totalQuestionsInCompetency,
         correctAnswers: correctInCompetency,
         wrongAnswers: wrongInCompetency,
         percentage: competencyPercentage
