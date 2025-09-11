@@ -509,3 +509,40 @@ export const getStudentQuestionnaireResults = async (req, res) => {
     })
   }
 }
+
+export const getStudentCourses = async (req, res) => {
+  const { uid } = req.user
+
+  try {
+    const studentCourses = await StudentCourse.find({ student: uid })
+      .populate('course', 'name description')
+
+    if (!studentCourses || studentCourses.length === 0) {
+      return res.status(200).send({
+        message: 'No estás inscrito en ninguna materia',
+        total: 0,
+        data: []
+      })
+    }
+
+    const data = studentCourses.map(sc => ({
+      _id: sc.course._id,
+      name: sc.course.name,
+      description: sc.course.description || 'Sin descripción'
+    }))
+
+    return res.status(200).send({
+      message: 'Materias obtenidas con éxito',
+      total: data.length,
+      data
+    })
+
+  } catch (err) {
+    console.error('Error al obtener materias del estudiante:', err)
+    return res.status(500).send({
+      success: false,
+      message: 'Error interno del servidor',
+      error: err.message || err
+    })
+  }
+}
