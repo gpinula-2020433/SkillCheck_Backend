@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createQuestionnaireWithQuestions, getAllQuestionnaires, getQuestionnaireResults, getQuestionnairesForStudent, getQuestionnaireWithQuestions, getStudentAttemptForQuestionnaire, getStudentAttemptReview } from './questionnaire.controller.js'
+import { createQuestionnaireWithQuestions, getAllQuestionnaires, getQuestionnaireResults, getQuestionnairesForStudent, getQuestionnaireWithQuestions, getStudentAttemptForQuestionnaire, getStudentAttemptReview, getStudentCourses, getStudentQuestionnaireResults } from './questionnaire.controller.js'
 import { validateJwt } from '../../middlewares/validate.jwt.js'
 import {
 
@@ -33,5 +33,11 @@ api.post('/getQuestionnaireResults', [validateJwt],getQuestionnaireResults) //Ad
 
 //Ver si el usuario tiene un intento en el cuestionario 
 api.get('/getStudentAttemptForQuestionnaire/:id', [validateJwt], getStudentAttemptForQuestionnaire)
+
+//Ver los resultados de los cuestionarios de una materia
+api.get('/getStudentQuestionnaireResults', [validateJwt], getStudentQuestionnaireResults)
+
+//Listar materias en las que estoy inscrito
+api.get('/getStudentCourses', [validateJwt], getStudentCourses)
 
 export default api;

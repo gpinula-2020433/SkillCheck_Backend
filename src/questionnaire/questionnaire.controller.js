@@ -6,6 +6,7 @@ import StudentAnswer from '../student.answer/student.answer.model.js'
 import User from '../user/user.model.js'
 import Course from '../course/course.model.js'
 
+
 export const getAllQuestionnaires = async (req, res) => {
   let { limit = 10, skip = 0, courseId } = req.query
 
@@ -433,6 +434,114 @@ export const getStudentAttemptForQuestionnaire = async (req, res) => {
     console.error("Error al verificar intento del cuestionario:", err)
     return res.status(500).send({
       message: "Error interno del servidor",
+      error: err.message || err
+    })
+  }
+}
+
+
+export const getStudentQuestionnaireResults = async (req, res) => {
+  const { uid } = req.user
+  const { courseId } = req.query
+
+  if (!courseId) {
+    return res.status(400).send({
+      message: 'El id de la materia es requerido'
+    })
+  }
+
+  try {
+    const studentCourse = await StudentCourse.findOne({ student: uid, course: courseId })
+      .populate('student', 'name surname email')
+      .populate('course', 'name')
+
+    if (!studentCourse) {
+      return res.status(404).send({
+        message: 'No estás inscrito en esta materia'
+      })
+    }
+
+    const questionnaires = await Questionnaire.find({ courseId })
+      .sort({ createdAt: -1 })
+
+    if (!questionnaires || questionnaires.length === 0) {
+      return res.status(200).send({
+        message: 'No hay cuestionarios en esta materia',
+        total: 0,
+        data: []
+      })
+    }
+
+    const results = await Promise.all(
+      questionnaires.map(async (q) => {
+        const result = await QuestionnaireResult.findOne({
+          studentCourseId: studentCourse._id,
+          questionnaireId: q._id
+        })
+
+        return {
+          questionnaireId: q._id,
+          title: q.title,
+          maxGrade: q.maxGrade,
+          passingGrade: q.passingGrade,
+          maxAllowedGrade: q.maxAllowedGrade,
+          weightOverMaxGrade: q.weightOverMaxGrade,
+          openDate: q.openDate,
+          deadline: q.deadline,
+          result: result || null
+        }
+      })
+    )
+
+    return res.status(200).send({
+      message: 'Resultados de los cuestionarios obtenidos con éxito',
+      total: results.length,
+      course: studentCourse.course.name,
+      data: results
+    })
+
+  } catch (err) {
+    console.error('Error al obtener resultados de cuestionarios del estudiante:', err)
+    return res.status(500).send({
+      success: false,
+      message: 'Error interno del servidor',
+      error: err.message || err
+    })
+  }
+}
+
+export const getStudentCourses = async (req, res) => {
+  const { uid } = req.user
+
+  try {
+    const studentCourses = await StudentCourse.find({ student: uid })
+      .populate('course', 'name description')
+
+    if (!studentCourses || studentCourses.length === 0) {
+      return res.status(200).send({
+        message: 'No estás inscrito en ninguna materia',
+        total: 0,
+        data: []
+      })
+    }
+
+    const data = studentCourses.map(sc => ({
+      _id: sc.course._id,
+      name: sc.course.name,
+      description: sc.course.description || 'Sin descripción'
+    }))
+
+    return res.status(200).send({
+      message: 'Materias obtenidas con éxito',
+      total: data.length,
+      data
+    })
+
+  } catch (err) {
+    console.error('Error al obtener materias del estudiante:', err)
+    return res.status(500).send({
+      success: false,
+      message: 'Error interno del servidor',
       error: err.message || err
     })
   }
