@@ -120,3 +120,31 @@ export const getAllTeachers = async (req, res) => {
     })
   }
 }
+
+
+// Obtener todos los estudiantes
+export const getAllStudents = async (req, res) => {
+  try {
+    const students = await User.find({ role: "STUDENT" }).select("name surname email")
+
+    if (!students || students.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No se encontraron estudiantes"
+      })
+    }
+
+    return res.send({
+      success: true,
+      message: "Estudiantes encontrados",
+      students
+    })
+  } catch (err) {
+    console.error("Error obteniendo estudiantes", err)
+    return res.status(500).send({
+      success: false,
+      message: "Error general",
+      err
+    })
+  }
+}

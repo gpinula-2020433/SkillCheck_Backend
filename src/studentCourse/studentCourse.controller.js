@@ -121,3 +121,37 @@ export const deleteStudentCourseById = async (req, res) => {
         })
     }
 }
+
+
+export const assignStudentsToCourse = async (req, res) => {
+  try {
+    const { courseId, students } = req.body // students = [array de IDs]
+
+    if (!courseId || !students || students.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "El curso y los estudiantes son requeridos"
+      })
+    }
+
+    // Creamos las relaciones
+    const assignments = students.map(studentId => ({
+      student: studentId,
+      course: courseId
+    }))
+
+    await StudentCourse.insertMany(assignments)
+
+    return res.status(201).json({
+      success: true,
+      message: "Estudiantes asignados al curso exitosamente"
+    })
+  } catch (error) {
+    console.error("Error asignando estudiantes al curso:", error)
+    return res.status(500).json({
+      success: false,
+      message: "Error asignando estudiantes",
+      error: error.message
+    })
+  }
+}

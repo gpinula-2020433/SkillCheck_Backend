@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { addStudentCourse, 
+         assignStudentsToCourse, 
          deleteStudentCourseById, 
          getAllStudentCourses,
          getStudentCourseById,
@@ -11,5 +12,7 @@ import { addStudentCourse,
  api.get('/courseStudentById/:id', getStudentCourseById)
  api.post('/addStudentCourse', addStudentCourse)
  api.delete('/deleteStudentCourse/:id', deleteStudentCourseById)
+
+ api.post('/assign', assignStudentsToCourse)
 
  export default api
