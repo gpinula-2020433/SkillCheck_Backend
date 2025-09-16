@@ -3,7 +3,9 @@ import {
     login,
     register,
     logout,
-    test
+    test,
+    registerStudent,
+    registerTeacher
 } from './auth.controller.js'
 import {
     isAdmin,
@@ -16,6 +18,8 @@ import { userLoginValidator, userRegistrationValidator } from "../../middlewares
 const api = Router()
 
 api.post('/register', [validateJwt, isAdmin, userRegistrationValidator], register)
+api.post('/register/student', userRegistrationValidator, registerStudent)
+api.post('/register/teacher', userRegistrationValidator, registerTeacher)
 api.post('/login', userLoginValidator,login)
 api.post('/logout', [validateJwt], logout)
 api.get('/test', validateJwt, test)

@@ -26,6 +26,49 @@ export const register = async(req, res)=>{
     }
 }
 
+
+export const registerStudent = async (req, res) => {
+  try {
+    const data = req.body
+    data.role = 'STUDENT'
+    let user = new User(data)
+    user.password = await encrypt(data.password)
+    await user.save()
+
+    return res.status(201).send({
+      message: 'Estudiante registrado exitosamente',
+      registeredUser: user
+    })
+  } catch (err) {
+    console.error('Error al registrar estudiante', err)
+    return res.status(500).send({
+      message: 'Error al registrar estudiante',
+      error: err.message || err
+    })
+  }
+}
+
+export const registerTeacher = async (req, res) => {
+  try {
+    const data = req.body
+    data.role = 'TEACHER'
+    let user = new User(data)
+    user.password = await encrypt(data.password)
+    await user.save()
+
+    return res.status(201).send({
+      message: 'Profesor registrado exitosamente',
+      registeredUser: user
+    })
+  } catch (err) {
+    console.error('Error al registrar profes@r', err)
+    return res.status(500).send({
+      message: 'Error al registrar profes@r',
+      error: err.message || err
+    })
+  }
+}
+
 export const login = async(req,res)=>{
     try {
         let { userLogin, password} = req.body
