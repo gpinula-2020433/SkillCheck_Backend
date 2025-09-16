@@ -84,7 +84,7 @@ export const getQuestionnairesForStudent = async (req, res) => {
 
     let questionnaires = await Questionnaire.find({ courseId: { $in: courseIds } })
       .populate('courseId', 'name')
-      .sort({ createdAt: -1 })
+      .sort({ deadline: 1 })
 
     if (status === 'pending') {
       const studentCourseIds = studentCourses.map(sc => sc._id)
@@ -94,8 +94,14 @@ export const getQuestionnairesForStudent = async (req, res) => {
       }).select('questionnaireId')
 
       const doneIds = doneResults.map(r => r.questionnaireId.toString())
+      const now = new Date()
 
-      questionnaires = questionnaires.filter(q => !doneIds.includes(q._id.toString()))
+      questionnaires = questionnaires.filter(q => 
+        !doneIds.includes(q._id.toString()) && 
+        q.deadline > now /*&& //Revisa que no esten vencidos, que la fecha de hoy sea más pequeña que la fecha de cierre
+        q.openDate <= now Compara si hoy es el día de apertura o simplemente es algun día después 
+          (Se revisa si estamos en alguna alguna fecha en la que ya este activo el cuestionario*/
+      )
     }
 
     if (questionnaires.length === 0) {
@@ -123,8 +129,6 @@ export const getQuestionnairesForStudent = async (req, res) => {
     })
   }
 }
-
-
 
 export const createQuestionnaireWithQuestions = async (req, res) => {
   try {

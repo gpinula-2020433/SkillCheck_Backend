@@ -3,7 +3,7 @@ import User from '../src/user/user.model.js'
 import StudentAnswer from '../src/student.answer/student.answer.model.js'
 import Question from '../src/question/question.model.js'
 import StudentCourse from '../src/studentCourse/studentCourse.model.js'
-
+import Questionnaire from '../src/questionnaire/questionnaire.model.js'
 
 export const existEmail = async (email, user) => {
   const alreadyEmail = await User.findOne({ email })
@@ -41,15 +41,26 @@ export const validateCreateQuestionnaireWithQuestions = async (req, res, next) =
     const { questions, ...questionnaireData } = req.body
     
     if (!questions || questions.length === 0) {
-      return res.status(400).send({ message: 'At least one question is required.' })
+      return res.status(400).send({ message: 'Se requiere al menos una pregunta.' })
     }
 
     const totalPoints = questions.reduce((acc, question) => acc + question.points, 0)
 
     if (totalPoints !== questionnaireData.maxGrade) {
       return res.status(400).send({
-        message: `Total points of the questions (${totalPoints}) must match the maximum grade (${questionnaireData.maxGrade})`
+        message: `El total de puntos de las preguntas (${totalPoints}) debe coincidir con la calificación máxima (${questionnaireData.maxGrade})`
       })
+    }
+
+    for (let question of questions) {
+      if (question.type === 'CHOICE') {
+        const correctOption = question.options.find(option => option.isCorrect);
+        if (!correctOption) {
+          return res.status(400).send({
+            message: `La pregunta "${question.statement}" debe tener al menos una opción marcada como correcta.`
+          })
+        }
+      }
     }
 
     next()
@@ -71,11 +82,21 @@ export const checkAnswersAndAttempt = async (req, res, next) => {
       return res.status(400).send({ message: 'No answers provided' })
     }
 
-   console.log( answers)
-    
     const questionnaireId = answers[0]?.questionnaireId
     if (!questionnaireId) {
       return res.status(400).send({ message: 'No questionnaire ID found in the answers' })
+    }
+
+    const questionnaire = await Questionnaire.findById(questionnaireId)
+    if (!questionnaire) {
+      return res.status(404).send({ message: 'Questionnaire not found' })
+    }
+
+    const now = new Date()
+    if (now > questionnaire.deadline) {
+      return res.status(400).send({ 
+        message: `El cuestionario "${questionnaire.title}" ya está cerrado y no admite respuestas`
+      })
     }
 
     const existingAnswer = await StudentAnswer.findOne({
@@ -88,23 +109,17 @@ export const checkAnswersAndAttempt = async (req, res, next) => {
     }
 
     const questions = await Question.find({ questionnaireId })
-    const answeredQuestionIds = answers.map(answer => answer.questionId)
 
     for (let question of questions) {
-      if (!answeredQuestionIds.includes(question._id.toString())) {
-        return res.status(400).send({
-          message: `You have not answered question: "${question.statement}" (ID: ${question._id})`
-        })
-      }
-
       const answer = answers.find(a => a.questionId.toString() === question._id.toString())
-      if (question.type === 'CHOICE' && !answer.selectedOptionId) {
+      
+      if (question.type === 'CHOICE' && (!answer || !answer.selectedOptionId)) {
         return res.status(400).send({
-          message: `You must select an option for question: "${question.statement}" (ID: ${question._id})`
+          message: `Debes seleccionar una opción para la pregunta: "${question.statement}"`
         })
-      } else if (question.type === 'OPEN' && !answer.answerText) {
+      } else if (question.type === 'OPEN' && (!answer || !answer.answerText)) {
         return res.status(400).send({
-          message: `You must provide an answer for question: "${question.statement}" (ID: ${question._id})`
+          message: `Debes proporcionar una respuesta para la pregunta: "${question.statement}"`
         })
       }
     }
@@ -118,3 +133,5 @@ export const checkAnswersAndAttempt = async (req, res, next) => {
     })
   }
 }
+
+
