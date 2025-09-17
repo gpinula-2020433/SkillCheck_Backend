@@ -466,7 +466,7 @@ export const getStudentQuestionnaireResults = async (req, res) => {
     }
 
     const questionnaires = await Questionnaire.find({ courseId })
-      .sort({ createdAt: -1 })
+      .sort({ deadline: 1 })
 
     if (!questionnaires || questionnaires.length === 0) {
       return res.status(200).send({
