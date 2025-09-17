@@ -105,7 +105,7 @@ export const checkAnswersAndAttempt = async (req, res, next) => {
     })
 
     if (existingAnswer) {
-      return res.status(400).send({ message: 'You have already submitted answers for this questionnaire' })
+      return res.status(400).send({ message: 'Ya has enviado respuestas para este cuestionario' })
     }
 
     const questions = await Question.find({ questionnaireId })

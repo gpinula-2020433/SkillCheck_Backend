@@ -72,7 +72,7 @@ export const submitAnswers = async (req, res) => {
 
     return res.status(201).send(
       {
-        message: 'All answers submitted successfully',
+        message: 'Todas las respuestas se enviaron correctamente',
         answers: studentAnswers,
         result
       }

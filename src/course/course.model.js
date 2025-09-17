@@ -9,7 +9,7 @@ const courseSchema = Schema(
     },
     description: {
       type: String,
-      maxLength: [300, "Can't be more than 300 characters"],
+      maxLength: [1000, "Can't be more than 300 characters"],
     },
     teacher: {
       type: Schema.Types.ObjectId,

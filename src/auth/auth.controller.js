@@ -95,7 +95,7 @@ export const login = async(req,res)=>{
                 .status(200)
                 .send(
                 {
-                    message: `Welcome ${user.name}`,
+                    message: `Bienvenido ${user.name}`,
                     loggedUser
                 }
             )
@@ -128,7 +128,7 @@ export const logout = (req, res) => {
 
         return res.status(200).send(
             {
-                message: 'Logout successful'
+                message: 'Cierre de sesión exitoso'
             }
         )
     } catch (err) {
