@@ -123,7 +123,6 @@ export const logout = (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? '' : undefined,
         })
 
         return res.status(200).send(
