@@ -101,7 +101,7 @@ export const login = async(req,res)=>{
 
         return res.status(401).send(
             {
-                message: 'Invalid credentials'
+                message: 'Credenciales no válidas'
             }
         )
     } catch (err) {
