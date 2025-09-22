@@ -7,12 +7,12 @@ export const validateErrors = (req, res, next) => {
     const allErrors = errors.array()
     const message = allErrors.map(err => ({ msg: err.msg }))
 
-    return res.status(400).send(
-      {
-        errors: allErrors,
-        message: message
-      }
-    )
+    const error = new Error("Validation error");
+    error.status = 400
+    error.errors = allErrors
+    error.messageList = message
+
+    return next(error)
   }
   
   next()

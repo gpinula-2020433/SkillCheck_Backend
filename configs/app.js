@@ -16,6 +16,7 @@ import questionRoutes from "../src/question/question.routes.js"
 import questionnaireResultRoutes from "../src/questionnaire.result/questionnaire.result.routes.js"
 import studentAnswerRoutes from "../src/student.answer/student.answer.routes.js"
 import userRoutes from '../src/user/user.routes.js'
+import { deleteFileOnError } from "../middlewares/delete.file.on.errors.js"
 
 const configs = (app) =>{
     app.use(express.json())
@@ -49,6 +50,7 @@ const routes = (app)=>{
     app.use('/v1/questionnaire', questionnaireRoutes)
     app.use('/v1/question', questionRoutes)
     app.use('/v1/studentAnswer', studentAnswerRoutes)
+    app.use(deleteFileOnError)
 }
 
 export const initServer = ()=>{

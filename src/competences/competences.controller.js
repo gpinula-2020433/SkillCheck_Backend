@@ -101,25 +101,39 @@ export const getCompetencesByCourse = async (req, res) => {
 
 // Agregar una competencia
 export const addCompetence = async (req, res) => {
-    try {
-        const data = req.body
+  try {
+    const { courseId, competenceName } = req.body
 
-        const competence = new Competence(data)
-        await competence.save()
-
-        return res.send({
-            success: true,
-            message: 'Competencia agregada correctamente',
-            competence
-        })
-    } catch (err) {
-        console.error('Error al agregar competencia', err)
-        return res.status(500).send({
-            success: false,
-            message: 'Error al agregar competencia',
-            err
-        })
+    if (!courseId || !competenceName) {
+      return res.status(400).send({
+        success: false,
+        message: 'courseId y competenceName son obligatorios'
+      })
     }
+
+    const count = await Competence.countDocuments({ courseId })
+
+    const competence = new Competence({
+      number: count + 1,
+      competenceName,
+      courseId
+    })
+
+    await competence.save()
+
+    return res.send({
+      success: true,
+      message: 'Competencia agregada correctamente',
+      competence
+    })
+  } catch (err) {
+    console.error('Error al agregar competencia', err)
+    return res.status(500).send({
+      success: false,
+      message: 'Error al agregar competencia',
+      err
+    })
+  }
 }
 
 

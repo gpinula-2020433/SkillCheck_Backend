@@ -109,11 +109,11 @@ export const addCourse = async (req, res, next) => {
         : JSON.parse(competences)
 
       for (const comp of parsedCompetences) {
-        let competenceDoc = await Competence.findOne({ competenceName: comp })
+        let competenceDoc = await Competence.findOne({ competenceName: comp.competenceName })
         if (!competenceDoc) {
           competenceDoc = await Competence.create({
-            competenceName: comp,
-            number: 0,
+            competenceName: comp.competenceName,
+            number: comp.number,
             courseId: null,
           })
         }
