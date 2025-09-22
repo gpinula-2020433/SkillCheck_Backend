@@ -92,15 +92,14 @@ export const getCourseById = async (req, res) => {
 
 
 // Agregar Curso
-export const addCourse = async (req, res) => {
+export const addCourse = async (req, res, next) => {
   try {
     const { name, description, teacher, competences } = req.body
 
     if (!name || !teacher) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and teacher are required",
-      })
+      const error = new Error("Name and teacher are required")
+      error.status = 400
+      return next(error)
     }
 
     let competencesIds = []
@@ -110,16 +109,16 @@ export const addCourse = async (req, res) => {
         : JSON.parse(competences)
 
       for (const comp of parsedCompetences) {
-        let competenceDoc = await Competence.findOne({ competenceName: comp });
+        let competenceDoc = await Competence.findOne({ competenceName: comp })
         if (!competenceDoc) {
-            competenceDoc = await Competence.create({
+          competenceDoc = await Competence.create({
             competenceName: comp,
             number: 0,
-            courseId: null
-            })
+            courseId: null,
+          })
         }
         competencesIds.push(competenceDoc._id)
-        }
+      }
     }
 
     const courseData = {
@@ -141,12 +140,7 @@ export const addCourse = async (req, res) => {
       course,
     })
   } catch (error) {
-    console.error(error)
-    return res.status(500).json({
-      success: false,
-      message: "Error creating course",
-      error: error.message,
-    })
+    next(error)
   }
 }
 
