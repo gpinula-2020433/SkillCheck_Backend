@@ -19,18 +19,18 @@ import userRoutes from '../src/user/user.routes.js'
 import { deleteFileOnError } from "../middlewares/delete.file.on.errors.js"
 
 const configs = (app) =>{
-    app.use(express.json())
-    app.use(express.urlencoded({extended: false}))
-    app.use(morgan('dev'))
-    app.use(helmet())
-    app.use(cookieParser())
-    app.use(limiter)
     app.use(cors(
         {
             origin: process.env.CLIENT_URL,
             credentials: true
         }
     ))
+    app.use(limiter)
+    app.use(express.json())
+    app.use(express.urlencoded({extended: false}))
+    app.use(morgan('dev'))
+    app.use(helmet())
+    app.use(cookieParser())
     app.use('/uploads/img/courses', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL)
     res.setHeader('Access-Control-Allow-Methods', 'GET')
