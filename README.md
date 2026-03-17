@@ -87,7 +87,7 @@ Crea un archivo `.env` en la raíz del proyecto:
 cp .env.example .env
 ```
 
-Edita el archivo `.env` con tu configuración (ver a la sección de configuración).
+Edita el archivo `.env` con tu configuración (ver en la sección de configuración).
 
 ### 4. Iniciar MongoDB
 Asegúrate de que MongoDB esté corriendo en tu sistema.
@@ -267,7 +267,7 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENS
 
 Si tienes alguna pregunta o sugerencia, no dudes en contactarnos:
 
-- **Email**: [gpinula-2020433@kinal.edu.gt]
+- **Email**: gpinula-2020433@kinal.edu.gt
 - **GitHub Issues**: [Issues del Proyecto](https://github.com/gpinula-2020433/SkillCheck_Backend/issues)
 
 Gracias por tu interés en este proyecto.
